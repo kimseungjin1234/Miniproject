@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Color Image Processing (RC 1)</title>
+</head>
+<body>
+<h1> Color Image Processing (RC 1) </h1>
+<form action="Color01_server.jsp" method="post" enctype="multipart/form-data">
+
+<p> <select name="algo" >
+		<option  value=""> 화소점 처리 </option>
+		<option  value="101"> 반전 영상 </option>
+		<option  value="102"> 밝게/어둡게 </option>
+		<option  value="103"> 곱하기 </option>
+		<option  value="104"> 나누기 </option>
+		<option  value="105"> 흑백 </option>
+		<option  value="106"> 파라볼라캡 </option>
+		<option  value="107"> 파라볼라컵 </option>
+		<option  value="108"> 감마 </option>		
+		<option  value="109"> 좌우반전 </option>
+		<option  value="110"> 상하반전 </option>
+		<option  value="111"> 영상 이동 </option>
+		<option  value="112"> 엠보싱 </option>
+		<option  value="113"> 블러링 </option>
+		<option  value="114"> 가우스 블러 </option>
+		<option  value="115"> 샤프닝 </option>
+		<option  value="116"> 경계선 검출 </option>
+		<option  value="117"> 유사 연산자 </option>
+		<option  value="118"> 차연산자 </option>
+		<option  value="119"> 로그 이미지 </option>
+		<option  value="120"> 도그 이미지 </option>
+		<option  value="121"> 라플라시안 </option>
+		<option  value="122"> 확대 </option>
+		<option  value="123"> 명암대비 </option>
+		<option  value="124"> 엔드인 </option>
+		<option  value="125"> 회전 </option>
+		
+		
+	</select>
+
+	
+<p> Parameter1 : <input type="text" value="0" name="para1">
+<p> Upload File : <input type="file" name="filename">
+
+<p><p> <input type="submit" value="Processing!!">
+
+
+</form>
+</body>
+</html>
