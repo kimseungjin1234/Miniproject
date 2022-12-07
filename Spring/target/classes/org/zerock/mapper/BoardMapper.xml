@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.BoardMapper">
+
+
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+
+
+	<select id="getList" resultType="org.zerock.domain.BoardVO">
+	<![CDATA[
+		select * from tbl_board where bno > 0 
+		]]>
+	</select>
+
+	<insert id="insert"> <!-- 테이블 생성 -->
+		insert into tbl_board (bno,title,content,writer)
+		values
+		(seq_board.nextval, #{title}, #{content}, #{writer})
+	</insert>
+
+	<insert id="insertSelectKey"> <!-- 게시물 생성 -->
+		<selectKey keyProperty="bno" order="BEFORE"
+			resultType="long"> <!-- 값이 몇개 들어와 있는 지 확인 하기 위한 코드 -->
+			select seq_board.nextval from dual
+		</selectKey>
+		insert into tbl_board (bno,title,content, writer)
+		values
+		(#{bno},#{title}, #{content}, #{writer}) <!-- 데이터 값 넣기 -->
+	</insert>
+
+	<select id="read" resultType="org.zerock.domain.BoardVO"> <!-- 테이블 가져오기 -->
+		select * from tbl_board where bno =#{bno}
+	</select>
+
+	<delete id="delete"> <!-- 테이블 삭제 -->
+		delete tbl_board where bno = #{bno}
+	</delete>
+
+	<update id="update">  <!-- 데이터 업데이트 -->
+		update tbl_board
+		set title= #{title},
+		content=#{content},
+		writer =
+		#{writer},
+		updateDate = sysdate
+		where bno = #{bno}
+	</update>
+
+	<select id="getListWithPaging"
+		resultType="org.zerock.domain.BoardVO"> <!-- 페이징 처리용 SQL 문 -->
+  <!--XML 처리에서는 CDATA 써서 부등호 오류 안뜨게 함  -->
+  <![CDATA[ 
+  select 
+    bno, title, content, writer, regdate, updatedate
+  from 
+      (
+      select /*+INDEX_DESC(tbl_board pk_board) */
+        rownum rn, bno, title, content, writer, regdate, updatedate 
+      from 
+        tbl_board
+      where 
+  ]]>
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+      
+  <![CDATA[    
+      rownum <= #{pageNum} * #{amount}
+      )
+  where rn > (#{pageNum} -1) * #{amount}   
+  ]]>
+	</select>
+
+
+
+
+	<select id="getTotalCount" resultType="int">
+		select count(*) from tbl_board where
+
+		<include refid="criteria"></include>
+
+		bno > 0
+
+	</select>
+
+</mapper>
